@@ -79,6 +79,7 @@ def mostrar_calificacion(aciertos, total_preguntas):
 
 st.title("Examen de Anatomía")
 
+# Inicializar el estado de la sesión si no existe
 if "preguntas_respondidas" not in st.session_state:
     st.session_state.preguntas_respondidas = []
 if "aciertos" not in st.session_state:
@@ -87,13 +88,15 @@ if "aciertos" not in st.session_state:
 preguntas = list(questions_and_answers.items())
 random.shuffle(preguntas)
 
-for pregunta, datos in preguntas:
-    if pregunta not in st.session_state.preguntas_respondidas:
+# Mostrar las preguntas solo una vez
+if not st.session_state.preguntas_respondidas:
+    for pregunta, datos in preguntas:
         st.write("---")
         if mostrar_pregunta(pregunta, datos["options"], datos["answer"]):
             st.session_state.aciertos += 1
         st.session_state.preguntas_respondidas.append(pregunta)
 
+# Mostrar la calificación solo después de responder todas las preguntas
 if len(st.session_state.preguntas_respondidas) == len(questions_and_answers):
     if st.button("Mostrar Calificación"):
         mostrar_calificacion(st.session_state.aciertos, len(questions_and_answers))
