@@ -1,7 +1,7 @@
 import streamlit as st
 import random
 
-# Preguntas y respuestas
+# Datos de medidas y estructuras
 questions_and_answers = {
     "Length of the adult kidney": {
         "options": ["7-10 cm", "9-12 cm", "11-14 cm", "13-16 cm"],
@@ -50,29 +50,9 @@ questions_and_answers = {
 }
 
 # --- Funciones para la lógica del examen ---
-
-def mostrar_pregunta(pregunta, opciones, respuesta_correcta, indice):
-    # Obtener la respuesta seleccionada del estado de la sesión, inicialmente es None
-    respuesta_seleccionada = st.session_state.get(f"respuesta_{indice}", None)
-
-    # Mostrar las opciones sin establecer un índice inicial
-    indice_respuesta = st.radio(pregunta, range(len(opciones)), format_func=lambda i: opciones[i], key=f"pregunta_{indice}")
-
-    # Guardar la respuesta seleccionada en el estado de la sesión
-    st.session_state[f"respuesta_{indice}"] = indice_respuesta
-
-    # Chequea si se ha seleccionado una respuesta
-    if respuesta_seleccionada is not None:
-        if opciones[indice_respuesta] == respuesta_correcta:
-            st.success("¡Correcto!")
-            return True
-        else:
-            st.error("Incorrecto.")
-            return False
-
 def mostrar_calificacion(aciertos, total_preguntas):
     porcentaje = (aciertos / total_preguntas) * 100
-    st.write(f"<h3>Tu calificación final es: {aciertos}/{total_preguntas} ({porcentaje:.1f}%)</h3>", unsafe_allow_html=True)
+    st.write(f"## Tu calificación final es: {aciertos}/{total_preguntas} ({porcentaje:.1f}%)")
 
     if porcentaje <= 50:
         st.write("¡Necesitas estudiar más! ¡Tú puedes!")
@@ -85,28 +65,38 @@ def mostrar_calificacion(aciertos, total_preguntas):
     else:
         st.write("¡Excelente trabajo! ¡Eres un experto en anatomía!")
 
-# --- Interfaz de usuario de Streamlit ---
+def main():
+    st.title("Examen de Anatomía")
+    
+    # Inicializar el estado de la sesión si no existe
+    if "preguntas_respondidas" not in st.session_state:
+        st.session_state.preguntas_respondidas = {}
+        st.session_state.aciertos = 0
+        st.session_state.mostrar_calificacion = False
 
-st.title("Examen de Anatomía")
-
-# Inicializar el estado de la sesión si no existe
-if "preguntas_respondidas" not in st.session_state:
-    st.session_state.preguntas_respondidas = []
-if "aciertos" not in st.session_state:
-    st.session_state.aciertos = 0
-
-preguntas = list(questions_and_answers.items())
-random.shuffle(preguntas)
-
-# Mostrar las preguntas solo una vez
-if not st.session_state.preguntas_respondidas:
+    preguntas = list(questions_and_answers.items())
+    random.shuffle(preguntas)
+    
+    # Mostrar preguntas
     for i, (pregunta, datos) in enumerate(preguntas):
-        st.write("---")
-        if mostrar_pregunta(pregunta, datos["options"], datos["answer"], i):
-            st.session_state.aciertos += 1
-        st.session_state.preguntas_respondidas.append(pregunta)
+        if i not in st.session_state.preguntas_respondidas:
+            st.write(f"### {pregunta}")
+            respuesta = st.radio(f"Selecciona la respuesta correcta para '{pregunta}':", datos["options"], key=f"pregunta_{i}")
+            
+            if st.button(f"Responder {i+1}", key=f"boton_{i}"):
+                if respuesta == datos["answer"]:
+                    st.session_state.aciertos += 1
+                st.session_state.preguntas_respondidas[i] = respuesta
 
-# Mostrar la calificación solo después de responder todas las preguntas
-if len(st.session_state.preguntas_respondidas) == len(questions_and_answers):
-    if st.button("Mostrar Calificación"):
-        mostrar_calificacion(st.session_state.aciertos, len(questions_and_answers))
+    # Mostrar el botón para mostrar la calificación final si se han respondido todas las preguntas
+    if len(st.session_state.preguntas_respondidas) == len(preguntas):
+        if not st.session_state.mostrar_calificacion:
+            if st.button("Mostrar Calificación"):
+                st.session_state.mostrar_calificacion = True
+    
+    # Mostrar la calificación final
+    if st.session_state.mostrar_calificacion:
+        mostrar_calificacion(st.session_state.aciertos, len(preguntas))
+
+if __name__ == "__main__":
+    main()
