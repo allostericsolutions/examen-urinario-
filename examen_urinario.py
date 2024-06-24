@@ -52,11 +52,13 @@ questions_and_answers = {
 def main():
     st.title("Structures and Measurements Quiz")
 
+    # Mostrar el logo
+    st.image("Allosteric solutions.png", width=100)  
+
     if "questions" not in st.session_state:
         st.session_state.questions = random.sample(list(questions_and_answers.items()), len(questions_and_answers))
     if "answers" not in st.session_state:
         st.session_state.answers = {}
-        # Initialize answers with a value outside the options' index range
         for i in range(len(questions_and_answers)):
             st.session_state.answers[f"question_{i}"] = -1
     if "grade_shown" not in st.session_state:
@@ -64,7 +66,6 @@ def main():
 
     for i, (question, data) in enumerate(st.session_state.questions):
         st.write(f"**Question {i + 1}:** {question}")
-        # Use the index as the key for st.radio()
         user_answer = st.radio("Select an option:", data["options"], key=f"question_{i}")
         st.session_state.answers[f"question_{i}"] = user_answer
 
@@ -92,6 +93,5 @@ def show_grade(correct_answers, total_questions):
     else:
         st.write("Excellent!")
 
-# --- Corrección de la sangría ---
 if __name__ == "__main__":
     main()
