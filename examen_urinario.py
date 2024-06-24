@@ -1,7 +1,7 @@
 import streamlit as st
 import random
 
-# Questions and answers about structures and measurements
+# Questions and answers about Urinary structures and ultrasound measurements
 questions_and_answers = {
     "Length of the adult kidney": {
         "options": ["7-10 cm", "9-12 cm", "11-14 cm", "13-16 cm"],
