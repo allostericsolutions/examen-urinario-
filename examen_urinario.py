@@ -50,7 +50,7 @@ questions_and_answers = {
 }
 
 def main():
-    st.title("Structures and Measurements Quiz")
+    st.title("Urinary Structures and Ultrasound Measurements ")
 
     # Enlace a tu página web (corrección de la sangría)
     st.markdown('<a href="https://www.allostericsolutions.com/" target="_blank">Visit our website</a>', unsafe_allow_html=True)
