@@ -55,6 +55,10 @@ def mostrar_pregunta(pregunta, opciones, respuesta_correcta, indice):
     # Obtener la respuesta seleccionada del estado de la sesión, o None si no hay respuesta previa
     respuesta_seleccionada = st.session_state.get(f"respuesta_{indice}", None)
 
+    # Si no hay respuesta previa, usar la primera opción por defecto
+    if respuesta_seleccionada is None:
+        respuesta_seleccionada = 0
+
     # Mostrar las opciones usando un índice
     indice_respuesta = st.radio(pregunta, range(len(opciones)), format_func=lambda i: opciones[i], key=f"pregunta_{indice}", index=respuesta_seleccionada)
     
@@ -111,4 +115,3 @@ if not st.session_state.preguntas_respondidas:
 if len(st.session_state.preguntas_respondidas) == len(questions_and_answers):
     if st.button("Mostrar Calificación"):
         mostrar_calificacion(st.session_state.aciertos, len(questions_and_answers))
-
