@@ -61,6 +61,9 @@ def mostrar_pregunta(pregunta, opciones, respuesta_correcta, indice):
     # Guardar la respuesta seleccionada en el estado de la sesión
     st.session_state[f"respuesta_{indice}"] = indice_respuesta
 
+    # Convertir indice_respuesta a entero
+    indice_respuesta = int(indice_respuesta)
+
     if opciones[indice_respuesta] == respuesta_correcta:
         st.success("¡Correcto!")
         return True
@@ -108,3 +111,4 @@ if not st.session_state.preguntas_respondidas:
 if len(st.session_state.preguntas_respondidas) == len(questions_and_answers):
     if st.button("Mostrar Calificación"):
         mostrar_calificacion(st.session_state.aciertos, len(questions_and_answers))
+
