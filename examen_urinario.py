@@ -52,8 +52,11 @@ questions_and_answers = {
 def main():
     st.title("Structures and Measurements Quiz")
 
-    # Mostrar el logo
-    st.image("Allosteric_solutions.png", width=100)  
+    # Mostrar el logo usando markdown y HTML
+    st.markdown(
+        '<img src="https://raw.githubusercontent.com/allostericsolutions/examen-urinario-/main/Allosteric_Solutions.png" width="100">',
+        unsafe_allow_html=True
+    )
 
     if "questions" not in st.session_state:
         st.session_state.questions = random.sample(list(questions_and_answers.items()), len(questions_and_answers))
