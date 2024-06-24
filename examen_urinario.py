@@ -54,7 +54,7 @@ def main():
 
     # Mostrar el logo usando markdown y HTML
     st.markdown(
-        '<img src="https://raw.githubusercontent.com/allostericsolutions/examen-urinario-/main/Allosteric_Solutions.png" width="200">',
+        '<img src="https://raw.githubusercontent.com/allostericsolutions/examen-urinario-/main/Allosteric_Solutions.png" width="300">',
         unsafe_allow_html=True
     )
 
