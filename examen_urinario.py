@@ -1,7 +1,9 @@
 import streamlit as st
 import random
 
-# Questions and answers about structures and measurements
+# Questions and answers about Urinary structures and measurements
+ # Enlace a tu página web
+    st.markdown('<a href="https://www.allostericsolutions.com/" target="_blank">Visit our website</a>', unsafe_allow_html=True)
 questions_and_answers = {
     "Length of the adult kidney": {
         "options": ["7-10 cm", "9-12 cm", "11-14 cm", "13-16 cm"],
@@ -78,8 +80,7 @@ def main():
             show_grade(correct_answers, len(questions_and_answers))
             st.session_state.grade_shown = True
 
-    # Enlace a tu página web
-    st.markdown('<a href="https://www.allostericsolutions.com/" target="_blank">Visit our website</a>', unsafe_allow_html=True)
+   
 
 def show_grade(correct_answers, total_questions):
     percentage = (correct_answers / total_questions) * 100
