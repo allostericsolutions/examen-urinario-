@@ -52,28 +52,23 @@ questions_and_answers = {
 # --- Funciones para la lógica del examen ---
 
 def mostrar_pregunta(pregunta, opciones, respuesta_correcta, indice):
-    # Obtener la respuesta seleccionada del estado de la sesión, o None si no hay respuesta previa
+    # Obtener la respuesta seleccionada del estado de la sesión, inicialmente es None
     respuesta_seleccionada = st.session_state.get(f"respuesta_{indice}", None)
 
-    # Si no hay respuesta previa, usar la primera opción por defecto
-    if respuesta_seleccionada is None:
-        respuesta_seleccionada = 0
+    # Mostrar las opciones sin establecer un índice inicial
+    indice_respuesta = st.radio(pregunta, range(len(opciones)), format_func=lambda i: opciones[i], key=f"pregunta_{indice}")
 
-    # Mostrar las opciones usando un índice
-    indice_respuesta = st.radio(pregunta, range(len(opciones)), format_func=lambda i: opciones[i], key=f"pregunta_{indice}", index=respuesta_seleccionada)
-    
     # Guardar la respuesta seleccionada en el estado de la sesión
     st.session_state[f"respuesta_{indice}"] = indice_respuesta
 
-    # Convertir indice_respuesta a entero
-    indice_respuesta = int(indice_respuesta)
-
-    if opciones[indice_respuesta] == respuesta_correcta:
-        st.success("¡Correcto!")
-        return True
-    else:
-        st.error("Incorrecto.")
-        return False
+    # Chequea si se ha seleccionado una respuesta
+    if respuesta_seleccionada is not None:
+        if opciones[indice_respuesta] == respuesta_correcta:
+            st.success("¡Correcto!")
+            return True
+        else:
+            st.error("Incorrecto.")
+            return False
 
 def mostrar_calificacion(aciertos, total_preguntas):
     porcentaje = (aciertos / total_preguntas) * 100
