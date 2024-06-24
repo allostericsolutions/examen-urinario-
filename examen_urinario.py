@@ -49,7 +49,6 @@ questions_and_answers = {
     }
 }
 
-# --- Funciones para la lógica del examen ---
 def mostrar_calificacion(aciertos, total_preguntas):
     porcentaje = (aciertos / total_preguntas) * 100
     st.write(f"## Tu calificación final es: {aciertos}/{total_preguntas} ({porcentaje:.1f}%)")
@@ -59,7 +58,7 @@ def mostrar_calificacion(aciertos, total_preguntas):
     elif porcentaje <= 70:
         st.write("Buen esfuerzo, ¡pero todavía puedes mejorar!")
     elif porcentaje <= 85:
-        st.write("¡Bien hecho! Sigue practicando.")
+        st.write("¡Bien hecho! Sigue practicando!")
     elif porcentaje <= 90:
         st.write("¡Muy bien! ¡Vas por buen camino!")
     else:
@@ -67,36 +66,42 @@ def mostrar_calificacion(aciertos, total_preguntas):
 
 def main():
     st.title("Examen de Anatomía")
-    
+
     # Inicializar el estado de la sesión si no existe
     if "preguntas_respondidas" not in st.session_state:
-        st.session_state.preguntas_respondidas = {}
+        st.session_state.preguntas_respondidas = []
         st.session_state.aciertos = 0
-        st.session_state.mostrar_calificacion = False
 
-    preguntas = list(questions_and_answers.items())
-    random.shuffle(preguntas)
-    
-    # Mostrar preguntas
-    for i, (pregunta, datos) in enumerate(preguntas):
+        # Barajar preguntas y opciones
+        preguntas = list(questions_and_answers.items())
+        random.shuffle(preguntas)
+
+        # Reorganizar opciones y guardar el índice de la respuesta correcta
+        reorganized_questions = []
+        for pregunta, datos in preguntas:
+            opciones = datos["options"][:]
+            random.shuffle(opciones)
+            respuesta_correcta = opciones.index(datos["answer"])
+            reorganized_questions.append((pregunta, opciones, respuesta_correcta))
+
+        st.session_state.preguntas = reorganized_questions
+
+    # Mostrar y responder preguntas
+    for i, (pregunta, opciones, respuesta_correcta) in enumerate(st.session_state.preguntas):
         if i not in st.session_state.preguntas_respondidas:
             st.write(f"### {pregunta}")
-            respuesta = st.radio(f"Selecciona la respuesta correcta para '{pregunta}':", datos["options"], key=f"pregunta_{i}")
-            
-            if st.button(f"Responder {i+1}", key=f"boton_{i}"):
-                if respuesta == datos["answer"]:
-                    st.session_state.aciertos += 1
-                st.session_state.preguntas_respondidas[i] = respuesta
+            respuesta = st.radio("Selecciona una respuesta:", opciones, key=f"pregunta_{i}")
 
-    # Mostrar el botón para mostrar la calificación final si se han respondido todas las preguntas
-    if len(st.session_state.preguntas_respondidas) == len(preguntas):
-        if not st.session_state.mostrar_calificacion:
-            if st.button("Mostrar Calificación"):
-                st.session_state.mostrar_calificacion = True
+            if st.button(f"Responder {i+1}", key=f"boton_{i}"):
+                if opciones.index(respuesta) == respuesta_correcta:
+                    st.session_state.aciertos += 1
+                st.session_state.preguntas_respondidas.append(i)
+                st.experimental_rerun()
     
-    # Mostrar la calificación final
-    if st.session_state.mostrar_calificacion:
-        mostrar_calificacion(st.session_state.aciertos, len(preguntas))
+    # Mostrar el botón para calificar después de responder todas las preguntas
+    if len(st.session_state.preguntas_respondidas) == len(st.session_state.preguntas):
+        if st.button("Mostrar Calificación"):
+            mostrar_calificacion(st.session_state.aciertos, len(st.session_state.preguntas))
 
 if __name__ == "__main__":
     main()
