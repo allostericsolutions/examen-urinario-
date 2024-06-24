@@ -53,7 +53,7 @@ def main():
     st.title("Structures and Measurements Quiz")
 
     # Mostrar el logo
-    st.image("Allosteric solutions.png", width=100)  
+    st.image("Allosteric_solutions.png", width=100)  
 
     if "questions" not in st.session_state:
         st.session_state.questions = random.sample(list(questions_and_answers.items()), len(questions_and_answers))
