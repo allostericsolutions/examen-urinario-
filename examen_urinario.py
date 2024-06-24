@@ -1,7 +1,7 @@
 import streamlit as st
 import random
 
-# Preguntas y respuestas sobre estructuras y medidas
+# Questions and answers about structures and measurements
 questions_and_answers = {
     "Length of the adult kidney": {
         "options": ["7-10 cm", "9-12 cm", "11-14 cm", "13-16 cm"],
@@ -50,40 +50,44 @@ questions_and_answers = {
 }
 
 def main():
-    st.title("Examen de Estructuras y Medidas")
+    st.title("Structures and Measurements Quiz")
 
-    if "preguntas" not in st.session_state:
-        st.session_state.preguntas = random.sample(list(questions_and_answers.items()), len(questions_and_answers))
-    if "respuestas" not in st.session_state:
-        st.session_state.respuestas = {}
-    if "calificacion_mostrada" not in st.session_state:
-        st.session_state.calificacion_mostrada = False
+    if "questions" not in st.session_state:
+        st.session_state.questions = random.sample(list(questions_and_answers.items()), len(questions_and_answers))
+    if "answers" not in st.session_state:
+        st.session_state.answers = {}
+        # Initialize answers with a value outside the options' index range
+        for i in range(len(questions_and_answers)):
+            st.session_state.answers[f"question_{i}"] = -1
+    if "grade_shown" not in st.session_state:
+        st.session_state.grade_shown = False
 
-    for i, (pregunta, datos) in enumerate(st.session_state.preguntas):
-        st.write(f"**Pregunta {i + 1}:** {pregunta}")
-        respuesta_usuario = st.radio("Selecciona una opción:", datos["options"], key=f"pregunta_{i}")
-        st.session_state.respuestas[pregunta] = respuesta_usuario
+    for i, (question, data) in enumerate(st.session_state.questions):
+        st.write(f"**Question {i + 1}:** {question}")
+        # Use the index as the key for st.radio()
+        user_answer = st.radio("Select an option:", data["options"], key=f"question_{i}")
+        st.session_state.answers[f"question_{i}"] = user_answer
 
-    if len(st.session_state.respuestas) == len(questions_and_answers) and not st.session_state.calificacion_mostrada:
-        if st.button("Mostrar Calificación"):
-            aciertos = sum([st.session_state.respuestas[pregunta] == datos["answer"] for pregunta, datos in questions_and_answers.items()])
-            mostrar_calificacion(aciertos, len(questions_and_answers))
-            st.session_state.calificacion_mostrada = True
+    if len(st.session_state.answers) == len(questions_and_answers) and not st.session_state.grade_shown:
+        if st.button("Show Grade"):
+            correct_answers = sum([st.session_state.answers[f"question_{i}"] == data["answer"] for i, (question, data) in enumerate(questions_and_answers.items())])
+            show_grade(correct_answers, len(questions_and_answers))
+            st.session_state.grade_shown = True
 
-def mostrar_calificacion(aciertos, total_preguntas):
-    porcentaje = (aciertos / total_preguntas) * 100
-    st.write(f"<h3>Tu calificación final es: {aciertos}/{total_preguntas} ({porcentaje:.1f}%)</h3>", unsafe_allow_html=True)
+def show_grade(correct_answers, total_questions):
+    percentage = (correct_answers / total_questions) * 100
+    st.write(f"<h3>Your final grade is: {correct_answers}/{total_questions} ({percentage:.1f}%)</h3>", unsafe_allow_html=True)
 
-    if porcentaje <= 50:
-        st.write("¡Necesitas estudiar más! ¡Tú puedes!")
-    elif porcentaje <= 70:
-        st.write("Buen esfuerzo, ¡pero todavía puedes mejorar!")
-    elif porcentaje <= 85:
-        st.write("¡Bien hecho! Sigue practicando.")
-    elif porcentaje <= 90:
-        st.write("¡Muy bien! ¡Vas por buen camino!")
+    if percentage <= 50:
+        st.write("You need a lot of work, keep going!")
+    elif percentage <= 70:
+        st.write("The effort has been good, but there is still more to do.")
+    elif percentage <= 85:
+        st.write("Good, but you can do more.")
+    elif percentage <= 90:
+        st.write("Very good!")
     else:
-        st.write("¡Excelente trabajo! ¡Eres un experto en anatomía!")
+        st.write("Excellent!")
 
 if __name__ == "__main__":
     main()
