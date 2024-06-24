@@ -51,8 +51,8 @@ questions_and_answers = {
 
 # --- Funciones para la lógica del examen ---
 
-def mostrar_pregunta(pregunta, opciones, respuesta_correcta):
-    respuesta_usuario = st.radio(pregunta, opciones, key=pregunta)
+def mostrar_pregunta(pregunta, opciones, respuesta_correcta, indice):
+    respuesta_usuario = st.radio(pregunta, opciones, key=f"pregunta_{indice}")  # Clave única con índice
     if respuesta_usuario == respuesta_correcta:
         st.success("¡Correcto!")
         return True
@@ -90,9 +90,9 @@ random.shuffle(preguntas)
 
 # Mostrar las preguntas solo una vez
 if not st.session_state.preguntas_respondidas:
-    for pregunta, datos in preguntas:
+    for i, (pregunta, datos) in enumerate(preguntas):
         st.write("---")
-        if mostrar_pregunta(pregunta, datos["options"], datos["answer"]):
+        if mostrar_pregunta(pregunta, datos["options"], datos["answer"], i):  # Pasar el índice a mostrar_pregunta
             st.session_state.aciertos += 1
         st.session_state.preguntas_respondidas.append(pregunta)
 
