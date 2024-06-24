@@ -1,9 +1,7 @@
 import streamlit as st
 import random
 
-# Questions and answers about Urinary structures and measurements
- # Enlace a tu página web
-    st.markdown('<a href="https://www.allostericsolutions.com/" target="_blank">Visit our website</a>', unsafe_allow_html=True)
+# Questions and answers about structures and measurements
 questions_and_answers = {
     "Length of the adult kidney": {
         "options": ["7-10 cm", "9-12 cm", "11-14 cm", "13-16 cm"],
@@ -54,9 +52,12 @@ questions_and_answers = {
 def main():
     st.title("Structures and Measurements Quiz")
 
+    # Enlace a tu página web (corrección de la sangría)
+    st.markdown('<a href="https://www.allostericsolutions.com/" target="_blank">Visit our website</a>', unsafe_allow_html=True)
+
     # Mostrar el logo usando markdown y HTML
     st.markdown(
-        '<img src="https://raw.githubusercontent.com/allostericsolutions/examen-urinario-/main/Allosteric_Solutions.png" width="300">',
+        '<img src="https://raw.githubusercontent.com/allostericsolutions/examen-urinario-/main/Allosteric_Solutions.png" width="100">',
         unsafe_allow_html=True
     )
 
@@ -79,8 +80,6 @@ def main():
             correct_answers = sum([st.session_state.answers[f"question_{i}"] == data["answer"] for i, (question, data) in enumerate(questions_and_answers.items())])
             show_grade(correct_answers, len(questions_and_answers))
             st.session_state.grade_shown = True
-
-   
 
 def show_grade(correct_answers, total_questions):
     percentage = (correct_answers / total_questions) * 100
